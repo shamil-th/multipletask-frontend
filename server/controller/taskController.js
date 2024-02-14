@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const TaskList = require("../model/model");
 
+
+// create a task
 exports.create = async (req, res) => {
   try {
     const { list, pin, taskTitle } = req.body;
@@ -20,6 +22,8 @@ exports.create = async (req, res) => {
   }
 };
 
+
+// retrive all task
 exports.find = async (req, res) => {
   TaskList.find()
     .then((task) => {
@@ -32,6 +36,8 @@ exports.find = async (req, res) => {
     });
 };
 
+
+// retrive single task
 exports.findTask = async (req, res) => {
   const id = req.params.id;
   TaskList.findById(id)
