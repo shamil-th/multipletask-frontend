@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const TaskList = require("../model/model");
 
-
 // create a task
 exports.create = async (req, res) => {
   try {
@@ -10,7 +9,7 @@ exports.create = async (req, res) => {
     const newTaskList = new TaskList({
       list,
       pin,
-      taskTitle
+      taskTitle,
     });
 
     await newTaskList.save();
@@ -22,6 +21,34 @@ exports.create = async (req, res) => {
   }
 };
 
+// update task completed status
+exports.updateStatus = async (req, res) => {
+  const list = req.body;
+  const id = req.params.id;
+  console.log(id,list)
+
+  try {
+    const task = await TaskList.findById(id);
+
+    if (!task) {
+      return res.status(400).send({ message: `Task with ID ${id} not found` });
+    }
+
+    // Update the list array of the task document
+    const updatedTask = await TaskList.findByIdAndUpdate(
+      id,
+      { $set: { list: list } },
+      { new: true }
+    );
+
+    res
+      .status(200)
+      .json({ message: "Task updated successfully", task: updatedTask });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 // retrive all task
 exports.find = async (req, res) => {
@@ -35,7 +62,6 @@ exports.find = async (req, res) => {
       });
     });
 };
-
 
 // retrive single task
 exports.findTask = async (req, res) => {
